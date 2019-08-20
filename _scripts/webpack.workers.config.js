@@ -1,3 +1,10 @@
+/*
+ * @Author: Jack
+ * @Date: 2019-08-20 16:30:48
+ * @LastEditors: Jack
+ * @LastEditTime: 2019-08-20 18:22:12
+ * @Description: 
+ */
 const path = require('path')
 const webpack = require('webpack')
 
@@ -48,8 +55,8 @@ const config = {
   ],
   resolve: {
     alias: {
-      '@': path.join(__dirname, './src/'),
-      src: path.join(__dirname, './src/'),
+      '@': path.join(__dirname, '../src/'),
+      src: path.join(__dirname, '../src/'),
     },
     extensions: ['.ts', '.js', '.json'],
   },

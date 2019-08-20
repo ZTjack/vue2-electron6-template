@@ -1,3 +1,10 @@
+/*
+ * @Author: Jack
+ * @Date: 2019-08-20 16:30:48
+ * @LastEditors: Jack
+ * @LastEditTime: 2019-08-20 18:21:46
+ * @Description: 
+ */
 const path = require('path')
 const fg = require('fast-glob')
 const webpack = require('webpack')
@@ -116,8 +123,8 @@ const config = {
   resolve: {
     alias: {
       vue$: 'vue/dist/vue.common.js',
-      '@': path.join(__dirname, './src/'),
-      src: path.join(__dirname, './src/'),
+      src: path.join(__dirname, '../src/'),
+      '@': path.join(__dirname, '../src/renderer'),
       icons: path.join(__dirname, '../_icons/'),
     },
     extensions: ['.ts', '.js', '.vue', '.json'],

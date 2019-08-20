@@ -1,60 +1,28 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import About from '../components/About.vue'
-import Help from '../components/Help.vue'
-import Home from '../components/Home.vue'
+
+const Home = () => import(/* webpackChunkName: "views-home" */ '@/views/home/index')
 
 Vue.use(Router)
 
 const router = new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
-      redirect: '/home',
-    },
-    {
-      path: '/home',
-      meta: {
-        title: 'Home',
-        icon: 'fa-home',
-      },
+      name: 'Home',
       component: Home,
-    },
-    {
-      path: '/about',
       meta: {
-        title: 'About',
-        icon: 'fa-info-circle',
-      },
-      component: About,
-    },
-    {
-      path: '/help',
-      meta: {
-        title: 'Help',
-        icon: 'fa-info-circle',
-      },
-      component: Help,
-    },
-    {
-      path: '*',
-      redirect: '/home',
-    },
-  ],
+        title: '1Token_数字货币行业的专业级券商+期货公司'
+      }
+    }
+  ]
 })
 
-// dynamically set application title to current view
-router.afterEach(to => {
-  let title =
-    to.path === '/home'
-      ? process.env.PRODUCT_NAME
-      : `${to.meta.title} - ${process.env.PRODUCT_NAME}`
-
-  if (!title) {
-    title = 'Home'
-  }
-
-  document.title = title
-})
+// permission control here
+// wap，web page redirect automatically here
+// router.beforeEach((to, from, next) => {
+//   next()
+// })
 
 export default router

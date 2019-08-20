@@ -1,40 +1,21 @@
-// import the styles
-import 'bulma-pro/bulma.sass'
-import { ipcRenderer } from 'electron'
-import 'material-design-icons/iconfont/material-icons.css'
+/*
+ * @Author: Jack
+ * @Date: 2019-04-04 22:12:42
+ * @LastEditors: Jack
+ * @LastEditTime: 2019-08-20 17:38:04
+ * @Description: 
+ */
 import Vue from 'vue'
-import Toasted from 'vue-toasted'
-import App from './App.vue'
-import './assets/style/animations.scss'
-import './assets/style/main.scss'
-import router from './router/index'
-import store from './store/index'
+import '@/styles/normalize/base.scss' // global css
+import App from './App'
+import router from './router'
+import store from './vuex/store'
 
-const isDev = process.env.NODE_ENV === 'development'
-
-Vue.use(Toasted, {
-  duration: 3000,
-  Icon: 'info',
-  iconPack: 'material',
-  position: 'bottom-center',
-  type: 'info',
-})
-
-Vue.config.devtools = isDev
-Vue.config.performance = isDev
 Vue.config.productionTip = false
 
-// tslint:disable-next-line: no-unused-expression
 new Vue({
   el: '#app',
   router,
   store,
-  render: h => h(App),
-})
-
-// handle menu event updates from main script
-ipcRenderer.on('change-view', (event, data) => {
-  if (data.route) {
-    router.push(data.route)
-  }
+  render: h => h(App)
 })
