@@ -1,11 +1,19 @@
+/*
+ * @Author: Jack
+ * @Date: 2019-08-20 16:30:48
+ * @LastEditors: Jack
+ * @LastEditTime: 2019-08-23 10:50:20
+ * @Description: 
+ */
 const builder = require('electron-builder')
 
 const Platform = builder.Platform
 const { name, productName } = require('../package.json')
 
+// jack: electron-builder settings
 const config = {
-  appId: `com.mubaidr.${name}`,
-  copyright: 'Copyright ©2019 mubaidr@gmail.com',
+  appId: `com.xxxxx.${name}`,
+  copyright: 'Copyright ©2019 xxxxx',
   productName,
   directories: {
     output: 'build/',

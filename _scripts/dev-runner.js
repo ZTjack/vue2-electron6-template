@@ -1,3 +1,11 @@
+/*
+ * @Author: Jack
+ * @Date: 2019-08-20 16:30:48
+ * @LastEditors: Jack
+ * @LastEditTime: 2019-08-23 11:06:22
+ * @Description: Dev Server Settings
+ */
+
 process.env.NODE_ENV = 'development'
 
 const electron = require('electron')
@@ -11,7 +19,7 @@ const { spawn } = require('child_process')
 
 const mainConfig = require('./webpack.main.config')
 const rendererConfig = require('./webpack.renderer.config')
-const workersConfig = require('./webpack.workers.config')
+// const workersConfig = require('./webpack.workers.config')
 
 let electronProcess = null
 let manualRestart = null
@@ -57,8 +65,10 @@ async function restartElectron() {
 }
 
 async function startMain() {
-  const webpackSetup = webpack([mainConfig, workersConfig])
-
+  // jack: not user workers config now
+  // const webpackSetup = webpack([mainConfig, workersConfig])
+  
+  const webpackSetup = webpack([mainConfig])
   webpackSetup.compilers.forEach(compiler => {
     const { name } = compiler
 
@@ -98,10 +108,11 @@ async function startMain() {
 }
 
 async function startRenderer() {
-  rendererConfig.entry.renderer = [
-    path.join(__dirname, 'dev-client'),
-    rendererConfig.entry.renderer,
-  ]
+  // TODO: jack: don't understand the design
+  // rendererConfig.entry.renderer = [
+  //   path.join(__dirname, 'dev-client'),
+  //   rendererConfig.entry.renderer,
+  // ]
 
   return new Promise(resolve => {
     const compiler = webpack(rendererConfig)
@@ -131,7 +142,7 @@ async function startRenderer() {
         })
       },
     })
-
+  // jack: change port here
     server.listen(9080)
   })
 }

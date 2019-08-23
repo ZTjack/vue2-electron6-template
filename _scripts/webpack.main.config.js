@@ -2,7 +2,7 @@
  * @Author: Jack
  * @Date: 2019-08-20 16:30:48
  * @LastEditors: Jack
- * @LastEditTime: 2019-08-20 18:22:25
+ * @LastEditTime: 2019-08-23 11:14:18
  * @Description: 
  */
 const path = require('path')
@@ -16,6 +16,7 @@ const {
 
 const externals = Object.keys(dependencies).concat(Object.keys(devDependencies))
 const isDevMode = process.env.NODE_ENV === 'development'
+// jack: design whiteList for externals here, to decrease the bundle size
 const whiteListedModules = []
 
 const config = {
