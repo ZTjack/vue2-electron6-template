@@ -2,7 +2,7 @@
  * @Author: Jack
  * @Date: 2019-08-20 16:30:48
  * @LastEditors: Jack
- * @LastEditTime: 2019-08-23 11:06:22
+ * @LastEditTime: 2019-08-26 15:15:18
  * @Description: Dev Server Settings
  */
 
@@ -50,8 +50,13 @@ async function restartElectron() {
   console.log('\nStarting electron...')
 
   const { pid } = electronProcess || {}
-  await killElectron(pid)
 
+  if(pid){
+    process.kill(pid, 'SIGKILL')
+    // 这个kill函数有点问题
+    // await killElectron(pid)
+  }
+  
   electronProcess = spawn(electron, [
     path.join(__dirname, '../dist/main.js'),
     // '--enable-logging', Enable to show logs from all electron processes
