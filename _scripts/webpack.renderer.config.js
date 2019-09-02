@@ -2,11 +2,10 @@
  * @Author: Jack
  * @Date: 2019-08-20 16:30:48
  * @LastEditors: Jack
- * @LastEditTime: 2019-08-23 11:19:10
+ * @LastEditTime: 2019-09-02 12:31:20
  * @Description: 
  */
 const path = require('path')
-const fg = require('fast-glob')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
