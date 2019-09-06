@@ -1,5 +1,13 @@
+/*
+ * @Author: Jack
+ * @Date: 2019-08-26 15:49:48
+ * @LastEditors: Jack
+ * @LastEditTime: 2019-09-06 13:46:35
+ * @Description: 
+ */
 import { app, BrowserWindow, Menu } from 'electron'
 import { productName } from '../../package.json'
+import './channel/index'
 
 // set app name
 app.setName(productName)
