@@ -17,6 +17,7 @@ process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
 
 const gotTheLock = app.requestSingleInstanceLock()
 const isDev = process.env.NODE_ENV === 'development'
+const isDebug = process.argv.includes('--debug')
 let mainWindow
 
 // only allow single instance of application
@@ -78,7 +79,6 @@ function createWindow() {
   } else {
     mainWindow.loadFile(`${__dirname}/index.html`)
 
-    // @ts-ignore
     global.__static = require('path')
       .join(__dirname, '/static')
       .replace(/\\/g, '\\\\')
@@ -102,7 +102,9 @@ app.on('ready', () => {
     installDevTools()
   }
 
-  // mainWindow.webContents.openDevTools()
+  if (isDebug) {
+    mainWindow.webContents.openDevTools()
+  }
 })
 
 app.on('window-all-closed', () => {
@@ -199,21 +201,17 @@ function setMenu() {
       ],
     })
 
-    // @ts-ignore
     template.push({
       role: 'window',
     })
 
-    // @ts-ignore
     template.push({
       role: 'help',
     })
 
-    // @ts-ignore
     template.push({ role: 'services' })
   }
 
-  // @ts-ignore
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
 }

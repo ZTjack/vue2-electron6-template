@@ -2,7 +2,7 @@
  * @Author: Jack
  * @Date: 2019-08-20 16:30:48
  * @LastEditors: Jack
- * @LastEditTime: 2019-08-26 15:15:18
+ * @LastEditTime: 2019-12-13 11:20:27
  * @Description: Dev Server Settings
  */
 
@@ -11,7 +11,6 @@ process.env.NODE_ENV = 'development'
 const electron = require('electron')
 const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
-const webpackHotMiddleware = require('webpack-hot-middleware')
 const kill = require('tree-kill')
 
 const path = require('path')
@@ -100,61 +99,38 @@ async function startMain() {
         })
         break
     }
+  })
 
-    compiler.watch(
-      {
-        aggregateTimeout: 500,
-      },
-      err => {
-        if (err) console.error(err)
-      }
-    )
+  webpackSetup.watch({
+    aggregateTimeout: 500,
+  },
+    err => {
+      if (err) console.error(err)
+    })
+}
+
+function startRenderer(callback) {
+  const compiler = webpack(rendererConfig)
+  const { name } = compiler
+
+  compiler.hooks.afterEmit.tap('afterEmit', () => {
+    console.log(`\nCompiled ${name} script!`)
+    console.log(`\nWatching file changes for ${name} script...`)
+  })
+
+  const server = new WebpackDevServer(compiler, {
+    contentBase: path.join(__dirname, '../'),
+    hot: true,
+    noInfo: true,
+    overlay: true,
+    clientLogLevel: 'warning',
+  })
+
+  server.listen(9080, '', err => {
+    if (err) console.error(err)
+
+    callback()
   })
 }
 
-async function startRenderer() {
-  // TODO: jack: don't understand the design
-  // rendererConfig.entry.renderer = [
-  //   path.join(__dirname, 'dev-client'),
-  //   rendererConfig.entry.renderer,
-  // ]
-
-  return new Promise(resolve => {
-    const compiler = webpack(rendererConfig)
-    const { name } = compiler
-    const hotMiddleware = webpackHotMiddleware(compiler, {
-      log: false,
-      noInfo: true,
-      quiet: true,
-    })
-
-    compiler.hooks.afterEmit.tap('afterEmit', () => {
-      console.log(`\nCompiled ${name} script!`)
-      console.log(`\nWatching file changes for ${name} script...`)
-    })
-
-    const server = new WebpackDevServer(compiler, {
-      contentBase: path.join(__dirname, '../'),
-      hot: true,
-      noInfo: true,
-      overlay: true,
-      clientLogLevel: 'error',
-      before(app, ctx) {
-        app.use(hotMiddleware)
-
-        ctx.middleware.waitUntilValid(() => {
-          resolve()
-        })
-      },
-    })
-  // jack: change port here
-    server.listen(9080)
-  })
-}
-
-async function start() {
-  await startRenderer()
-  startMain()
-}
-
-start()
+startRenderer(startMain)

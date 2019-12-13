@@ -8,18 +8,19 @@
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 const {
-  // dependencies,
-  // devDependencies,
+  dependencies,
+  devDependencies,
   productName,
 } = require('../package.json')
 
-// const externals = Object.keys(dependencies)
+const externals = Object.keys(dependencies).concat(Object.keys(devDependencies))
 const isDevMode = process.env.NODE_ENV === 'development'
-// const whiteListedModules = ['vue']
+const whiteListedModules = ['vue']
 
 const config = {
   name: 'renderer',
@@ -33,7 +34,7 @@ const config = {
     path: path.join(__dirname, '../dist'),
     filename: '[name].js',
   },
-  // externals: externals.filter(d => !whiteListedModules.includes(d)),
+  externals: externals.filter(d => !whiteListedModules.includes(d)),
   module: {
     rules: [
       {
@@ -47,20 +48,27 @@ const config = {
       },
       {
         test: /\.vue$/,
-        use: {
-          loader: 'vue-loader',
-          options: {
-            loaders: {
-              sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax',
-            },
-          },
-        },
+        loader: 'vue-loader',
+        // use: {
+        //   loader: 'vue-loader',
+        //   options: {
+        //     loaders: {
+        //       sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax',
+        //     },
+        //   },
+        // },
       },
       {
         test: /\.s(c|a)ss$/,
         use: [
+          // {
+          //   loader: 'vue-style-loader',
+          // },
           {
-            loader: 'vue-style-loader',
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              hmr: isDevMode,
+            },
           },
           {
             loader: 'css-loader',
@@ -76,7 +84,16 @@ const config = {
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              hmr: isDevMode,
+            },
+          },
+          // 'style-loader',
+          'css-loader',
+        ],
       },
       {
         test: /\.(png|jpe?g|gif|tif?f|bmp|webp|svg)(\?.*)?$/,
@@ -118,6 +135,10 @@ const config = {
     new webpack.DefinePlugin({
       'process.env.PRODUCT_NAME': JSON.stringify(productName),
     }),
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css',
+    }),
   ],
   resolve: {
     alias: {
@@ -139,23 +160,13 @@ if (isDevMode) {
   config.plugins.push(new webpack.HotModuleReplacementPlugin())
 } else {
   config.plugins.push(
-    new ScriptExtHtmlWebpackPlugin({
-      async: [/runtime/],
-      defaultAttribute: 'defer',
-    })
-    // new CopyWebpackPlugin([
-    //   {
-    //     from: path.join(__dirname, '../src/data'),
-    //     to: path.join(__dirname, '../dist/data'),
-    //   },
-    // ])
+    new CopyWebpackPlugin([
+      {
+        from: path.join(__dirname, '../static'),
+        to: path.join(__dirname, '../dist/static'),
+      },
+    ])
   )
-
-  // config.optimization = {
-  //   splitChunks: {
-  //     chunks: 'all',
-  //   },
-  // }
 }
 
 module.exports = config

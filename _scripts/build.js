@@ -2,28 +2,36 @@
  * @Author: Jack
  * @Date: 2019-08-20 16:30:48
  * @LastEditors: Jack
- * @LastEditTime: 2019-08-23 10:50:20
+ * @LastEditTime: 2019-12-13 11:18:28
  * @Description: 
  */
+const os = require('os')
 const builder = require('electron-builder')
 
 const Platform = builder.Platform
 const { name, productName } = require('../package.json')
 
-// jack: electron-builder settings
+let targets
+var platform = os.platform()
+
+if (platform == 'darwin') {
+  targets = Platform.MAC.createTarget()
+} else if (platform == 'win32') {
+  targets = Platform.WINDOWS.createTarget()
+} else if (platform == 'linux') {
+  targets = Platform.LINUX.createTarget()
+}
+
 const config = {
-  appId: `com.xxxxx.${name}`,
-  copyright: 'Copyright ©2019 xxxxx',
+  appId: `com.mubaidr.${name}`,
+  copyright: 'Copyright ©2019 mubaidr@gmail.com',
+  // asar: false,
+  // compression: 'store',
   productName,
   directories: {
-    output: 'build/',
+    output: './build/',
   },
-  files: [
-    '_icons/icon.*',
-    '!**/node_modules/**/*',
-    'dist/**/*',
-    'src/data/**/*',
-  ],
+  files: ['_icons/icon.*', './dist/**/*'],
   dmg: {
     contents: [
       {
@@ -65,7 +73,7 @@ const config = {
 
 builder
   .build({
-    targets: Platform.WINDOWS.createTarget(),
+    targets,
     config,
   })
   .then(m => {
