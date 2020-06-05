@@ -1,10 +1,3 @@
-/*
- * @Author: Jack
- * @Date: 2019-08-20 16:30:48
- * @LastEditors: Jack
- * @LastEditTime: 2019-10-21 09:48:28
- * @Description: 
- */
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -25,7 +18,7 @@ const whiteListedModules = ['vue']
 const config = {
   name: 'renderer',
   mode: process.env.NODE_ENV,
-  devtool: isDevMode ? 'eval' : false,
+  devtool: isDevMode ? '#cheap-module-eval-source-map' : false,
   entry: {
     renderer: path.join(__dirname, '../src/renderer/main.js'),
   },
@@ -49,21 +42,10 @@ const config = {
       {
         test: /\.vue$/,
         loader: 'vue-loader',
-        // use: {
-        //   loader: 'vue-loader',
-        //   options: {
-        //     loaders: {
-        //       sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax',
-        //     },
-        //   },
-        // },
       },
       {
         test: /\.s(c|a)ss$/,
         use: [
-          // {
-          //   loader: 'vue-style-loader',
-          // },
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
@@ -91,7 +73,6 @@ const config = {
               hmr: isDevMode,
             },
           },
-          // 'style-loader',
           'css-loader',
         ],
       },
@@ -99,7 +80,8 @@ const config = {
         test: /\.(png|jpe?g|gif|tif?f|bmp|webp|svg)(\?.*)?$/,
         use: {
           loader: 'url-loader',
-          query: {
+          options: {
+            esModule: false,
             limit: 10000,
             name: 'imgs/[name]--[folder].[ext]',
           },
@@ -109,7 +91,8 @@ const config = {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
         use: {
           loader: 'url-loader',
-          query: {
+          options: {
+            esModule: false,
             limit: 10000,
             name: 'fonts/[name]--[folder].[ext]',
           },
@@ -143,8 +126,8 @@ const config = {
   resolve: {
     alias: {
       vue$: 'vue/dist/vue.common.js',
+      '@': path.join(__dirname, '../src/'),
       src: path.join(__dirname, '../src/'),
-      '@': path.join(__dirname, '../src/renderer'),
       icons: path.join(__dirname, '../_icons/'),
     },
     extensions: ['.ts', '.js', '.vue', '.json'],
@@ -157,15 +140,24 @@ const config = {
  */
 if (isDevMode) {
   // any dev only config
-  config.plugins.push(new webpack.HotModuleReplacementPlugin())
+  config.plugins.push(
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin({
+      __static: `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`,
+    })
+  )
 } else {
   config.plugins.push(
     new CopyWebpackPlugin([
       {
         from: path.join(__dirname, '../static'),
         to: path.join(__dirname, '../dist/static'),
+        ignore: ['.*'],
       },
-    ])
+    ]),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+    })
   )
 }
 

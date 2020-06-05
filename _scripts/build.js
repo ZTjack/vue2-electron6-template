@@ -1,10 +1,11 @@
 /*
  * @Author: Jack
- * @Date: 2019-08-20 16:30:48
+ * @Date: 2020-06-05 17:43:22
  * @LastEditors: Jack
- * @LastEditTime: 2019-12-13 11:18:28
- * @Description: 
+ * @LastEditTime: 2020-06-05 17:46:23
+ * @Description:
  */
+
 const os = require('os')
 const builder = require('electron-builder')
 
@@ -31,7 +32,7 @@ const config = {
   directories: {
     output: './build/',
   },
-  files: ['_icons/icon.*', './dist/**/*'],
+  files: ['_icons/icon.*', './dist/**/*', '!./dist/web/**/*'],
   dmg: {
     contents: [
       {

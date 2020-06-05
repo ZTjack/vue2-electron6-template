@@ -1,10 +1,11 @@
 /*
  * @Author: Jack
- * @Date: 2019-08-20 16:30:48
+ * @Date: 2020-06-05 17:43:22
  * @LastEditors: Jack
- * @LastEditTime: 2019-08-20 18:22:12
- * @Description: 
+ * @LastEditTime: 2020-06-05 17:49:43
+ * @Description:
  */
+
 const path = require('path')
 const webpack = require('webpack')
 
@@ -20,7 +21,7 @@ const isDevMode = process.env.NODE_ENV === 'development'
 const config = {
   name: 'workers',
   mode: process.env.NODE_ENV,
-  devtool: isDevMode ? 'eval' : false,
+  devtool: isDevMode ? '#cheap-module-eval-source-map' : false,
   entry: {
     workerSample: path.join(__dirname, '../src/utilities/workerSample.ts'),
   },
@@ -69,6 +70,12 @@ const config = {
 if (isDevMode) {
   // any dev only config
   config.plugins.push(new webpack.HotModuleReplacementPlugin())
+} else {
+  config.plugins.push(
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+    })
+  )
 }
 
 module.exports = config

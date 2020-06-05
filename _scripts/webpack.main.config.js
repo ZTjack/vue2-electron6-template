@@ -1,10 +1,11 @@
 /*
  * @Author: Jack
- * @Date: 2019-08-20 16:30:48
+ * @Date: 2020-06-05 17:43:22
  * @LastEditors: Jack
- * @LastEditTime: 2019-08-23 11:14:18
- * @Description: 
+ * @LastEditTime: 2020-06-05 17:48:42
+ * @Description:
  */
+
 const path = require('path')
 const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
@@ -17,13 +18,12 @@ const {
 
 const externals = Object.keys(dependencies).concat(Object.keys(devDependencies))
 const isDevMode = process.env.NODE_ENV === 'development'
-// jack: design whiteList for externals here, to decrease the bundle size
 const whiteListedModules = []
 
 const config = {
   name: 'main',
   mode: process.env.NODE_ENV,
-  devtool: isDevMode ? 'eval' : false,
+  devtool: isDevMode ? '#cheap-module-eval-source-map' : false,
   entry: {
     main: path.join(__dirname, '../src/main/index.js'),
   },
@@ -65,7 +65,13 @@ const config = {
   target: 'electron-main',
 }
 
-if (!isDevMode) {
+if (isDevMode) {
+  config.plugins.push(
+    new webpack.DefinePlugin({
+      __static: `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`,
+    })
+  )
+} else {
   config.plugins.push(
     new CopyWebpackPlugin([
       {
@@ -75,8 +81,12 @@ if (!isDevMode) {
       {
         from: path.join(__dirname, '../static'),
         to: path.join(__dirname, '../dist/static'),
+        ignore: ['.*'],
       },
-    ])
+    ]),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+    })
   )
 }
 

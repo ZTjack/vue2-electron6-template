@@ -1,13 +1,7 @@
-/*
- * @Author: Jack
- * @Date: 2019-08-20 16:30:48
- * @LastEditors: Jack
- * @LastEditTime: 2019-12-13 11:20:27
- * @Description: Dev Server Settings
- */
-
 process.env.NODE_ENV = 'development'
+// process.env.ELECTRON_ENABLE_LOGGING = true
 
+const chalk = require('chalk')
 const electron = require('electron')
 const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
@@ -18,13 +12,11 @@ const { spawn } = require('child_process')
 
 const mainConfig = require('./webpack.main.config')
 const rendererConfig = require('./webpack.renderer.config')
-// const workersConfig = require('./webpack.workers.config')
+const workersConfig = require('./webpack.workers.config')
 
 let electronProcess = null
 let manualRestart = null
-const remoteDebugging = !!(
-  process.argv[2] && process.argv[2] === '--remote-debug'
-)
+const remoteDebugging = process.argv.includes('--remote-debug')
 
 if (remoteDebugging) {
   // disable dvtools open in electron
@@ -46,47 +38,50 @@ async function killElectron(pid) {
 }
 
 async function restartElectron() {
-  console.log('\nStarting electron...')
+  console.log(chalk.gray('\nStarting electron...'))
 
   const { pid } = electronProcess || {}
+  await killElectron(pid)
 
-  if(pid){
-    process.kill(pid, 'SIGKILL')
-    // 这个kill函数有点问题
-    // await killElectron(pid)
-  }
-  
   electronProcess = spawn(electron, [
     path.join(__dirname, '../dist/main.js'),
-    // '--enable-logging', Enable to show logs from all electron processes
+    // '--enable-logging', // Enable to show logs from all electron processes
     remoteDebugging ? '--inspect=9222' : '',
     remoteDebugging ? '--remote-debugging-port=9223' : '',
   ])
+
+  electronProcess.stdout.on('data', data => {
+    console.log(chalk.white(data.toString()))
+  })
+
+  electronProcess.stderr.on('data', data => {
+    console.error(chalk.red(data.toString()))
+  })
 
   electronProcess.on('exit', (code, signal) => {
     if (!manualRestart) process.exit(0)
   })
 }
 
-async function startMain() {
-  // jack: not user workers config now
-  // const webpackSetup = webpack([mainConfig, workersConfig])
-  
-  const webpackSetup = webpack([mainConfig])
+function startMain() {
+  const webpackSetup = webpack([mainConfig, workersConfig])
+
   webpackSetup.compilers.forEach(compiler => {
     const { name } = compiler
 
     switch (name) {
       case 'workers':
         compiler.hooks.afterEmit.tap('afterEmit', async () => {
-          console.log(`\nCompiled ${name} script!`)
-          console.log(`\nWatching file changes for ${name} script...`)
+          console.log(chalk.gray(`\nCompiled ${name} script!`))
+          console.log(
+            chalk.gray(`\nWatching file changes for ${name} script...`)
+          )
         })
         break
       case 'main':
       default:
         compiler.hooks.afterEmit.tap('afterEmit', async () => {
-          console.log(`\nCompiled ${name} script!`)
+          console.log(chalk.gray(`\nCompiled ${name} script!`))
 
           manualRestart = true
           await restartElectron()
@@ -95,18 +90,22 @@ async function startMain() {
             manualRestart = false
           }, 2500)
 
-          console.log(`\nWatching file changes for ${name} script...`)
+          console.log(
+            chalk.gray(`\nWatching file changes for ${name} script...`)
+          )
         })
         break
     }
   })
 
-  webpackSetup.watch({
-    aggregateTimeout: 500,
-  },
+  webpackSetup.watch(
+    {
+      aggregateTimeout: 500,
+    },
     err => {
-      if (err) console.error(err)
-    })
+      if (err) console.error(chalk.red(err))
+    }
+  )
 }
 
 function startRenderer(callback) {
@@ -114,8 +113,8 @@ function startRenderer(callback) {
   const { name } = compiler
 
   compiler.hooks.afterEmit.tap('afterEmit', () => {
-    console.log(`\nCompiled ${name} script!`)
-    console.log(`\nWatching file changes for ${name} script...`)
+    console.log(chalk.gray(`\nCompiled ${name} script!`))
+    console.log(chalk.gray(`\nWatching file changes for ${name} script...`))
   })
 
   const server = new WebpackDevServer(compiler, {
@@ -127,7 +126,7 @@ function startRenderer(callback) {
   })
 
   server.listen(9080, '', err => {
-    if (err) console.error(err)
+    if (err) console.error(chalk.red(err))
 
     callback()
   })
