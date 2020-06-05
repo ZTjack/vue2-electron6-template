@@ -2,16 +2,12 @@
  * @Author: Jack
  * @Date: 2020-06-05 17:43:22
  * @LastEditors: Jack
- * @LastEditTime: 2020-06-05 17:54:23
+ * @LastEditTime: 2020-06-05 18:03:01
  * @Description:
  */
 
-import 'bulma-pro/bulma.sass'
-import 'material-design-icons/iconfont/material-icons.css'
 import Vue from 'vue'
 import App from './App.vue'
-import './assets/style/animations.scss'
-import './assets/style/main.scss'
 import router from './router/index'
 import store from './store/index'
 
@@ -26,7 +22,7 @@ new Vue({
   el: '#app',
   router,
   store,
-  render: h => h(App),
+  render: (h) => h(App),
 })
 
 // to avoild accesing electorn api from web app build

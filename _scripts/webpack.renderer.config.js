@@ -27,7 +27,7 @@ const config = {
     path: path.join(__dirname, '../dist'),
     filename: '[name].js',
   },
-  externals: externals.filter(d => !whiteListedModules.includes(d)),
+  externals: externals.filter((d) => !whiteListedModules.includes(d)),
   module: {
     rules: [
       {
@@ -126,7 +126,7 @@ const config = {
   resolve: {
     alias: {
       vue$: 'vue/dist/vue.common.js',
-      '@': path.join(__dirname, '../src/'),
+      '@': path.join(__dirname, '../src/renderer'),
       src: path.join(__dirname, '../src/'),
       icons: path.join(__dirname, '../_icons/'),
     },

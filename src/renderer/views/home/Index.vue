@@ -2,7 +2,7 @@
  * @Author: Jack
  * @Date: 2019-04-04 22:12:42
  * @LastEditors: Jack
- * @LastEditTime: 2019-09-06 13:43:44
+ * @LastEditTime: 2020-06-05 18:09:08
  * @Description: 
  -->
 <template>
@@ -12,13 +12,11 @@
 </template>
 
 <script>
-
-import {ipcRenderer} from 'electron'
-import {TEST_CHANNEL} from 'src/main/channel/const'
+import { ipcRenderer } from 'electron'
+import { TEST_CHANNEL } from 'src/main/channel/const'
 export default {
   name: 'Home',
-  mounted(){
-
+  mounted() {
     ipcRenderer.on(TEST_CHANNEL, (event, arg) => {
       console.log('Main sent data', arg)
     })
@@ -28,5 +26,4 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
-</style>
+<style rel="stylesheet/scss" lang="scss" scoped></style>
