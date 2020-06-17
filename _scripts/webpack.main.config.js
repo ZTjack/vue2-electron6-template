@@ -2,7 +2,7 @@
  * @Author: Jack
  * @Date: 2020-06-05 17:43:22
  * @LastEditors: Jack
- * @LastEditTime: 2020-06-05 17:48:42
+ * @LastEditTime: 2020-12-16 13:41:55
  * @Description:
  */
 
@@ -13,7 +13,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const {
   dependencies,
   devDependencies,
-  productName,
+  productName
 } = require('../package.json')
 
 const externals = Object.keys(dependencies).concat(Object.keys(devDependencies))
@@ -25,50 +25,50 @@ const config = {
   mode: process.env.NODE_ENV,
   devtool: isDevMode ? '#cheap-module-eval-source-map' : false,
   entry: {
-    main: path.join(__dirname, '../src/main/index.js'),
+    main: path.join(__dirname, '../src/main/index.js')
   },
-  externals: externals.filter(d => !whiteListedModules.includes(d)),
+  externals: externals.filter((d) => !whiteListedModules.includes(d)),
   module: {
     rules: [
       {
         test: /\.(j|t)s$/,
         loader: ['babel-loader'],
-        exclude: /node_modules/,
+        exclude: /node_modules/
       },
       {
         test: /\.node$/,
-        use: 'node-loader',
-      },
-    ],
+        use: 'node-loader'
+      }
+    ]
   },
   node: {
     __dirname: isDevMode,
-    __filename: isDevMode,
+    __filename: isDevMode
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.PRODUCT_NAME': JSON.stringify(productName),
-    }),
+      'process.env.PRODUCT_NAME': JSON.stringify(productName)
+    })
   ],
   output: {
     filename: '[name].js',
     libraryTarget: 'commonjs2',
-    path: path.join(__dirname, '../dist'),
+    path: path.join(__dirname, '../dist')
   },
   resolve: {
     extensions: ['.ts', '.js', '.json'],
     alias: {
       '@': path.join(__dirname, '../src/'),
-      src: path.join(__dirname, '../src/'),
-    },
+      src: path.join(__dirname, '../src/')
+    }
   },
-  target: 'electron-main',
+  target: 'electron-main'
 }
 
 if (isDevMode) {
   config.plugins.push(
     new webpack.DefinePlugin({
-      __static: `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`,
+      __static: `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`
     })
   )
 } else {
@@ -76,16 +76,16 @@ if (isDevMode) {
     new CopyWebpackPlugin([
       {
         from: path.join(__dirname, '../src/data'),
-        to: path.join(__dirname, '../dist/data'),
+        to: path.join(__dirname, '../dist/data')
       },
       {
         from: path.join(__dirname, '../static'),
         to: path.join(__dirname, '../dist/static'),
-        ignore: ['.*'],
-      },
+        ignore: ['.*']
+      }
     ]),
     new webpack.LoaderOptionsPlugin({
-      minimize: true,
+      minimize: true
     })
   )
 }
