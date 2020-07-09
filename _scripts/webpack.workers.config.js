@@ -12,7 +12,7 @@ const webpack = require('webpack')
 const {
   dependencies,
   devDependencies,
-  productName,
+  productName
 } = require('../package.json')
 
 const externals = Object.keys(dependencies).concat(Object.keys(devDependencies))
@@ -23,12 +23,12 @@ const config = {
   mode: process.env.NODE_ENV,
   devtool: isDevMode ? '#cheap-module-eval-source-map' : false,
   entry: {
-    workerSample: path.join(__dirname, '../src/utilities/workerSample.ts'),
+    workerSample: path.join(__dirname, '../src/utilities/workerSample.ts')
   },
   output: {
     libraryTarget: 'commonjs2',
     path: path.join(__dirname, '../dist'),
-    filename: '[name].js',
+    filename: '[name].js'
   },
   externals: externals,
   module: {
@@ -36,32 +36,32 @@ const config = {
       {
         test: /\.(j|t)s$/,
         use: 'babel-loader',
-        exclude: /node_modules/,
+        exclude: /node_modules/
       },
       {
         test: /\.node$/,
-        use: 'node-loader',
-      },
-    ],
+        use: 'node-loader'
+      }
+    ]
   },
   node: {
     __dirname: isDevMode,
-    __filename: isDevMode,
+    __filename: isDevMode
   },
   plugins: [
     // new WriteFilePlugin(),
     new webpack.DefinePlugin({
-      'process.env.PRODUCT_NAME': JSON.stringify(productName),
-    }),
+      'process.env.PRODUCT_NAME': JSON.stringify(productName)
+    })
   ],
   resolve: {
     alias: {
       '@': path.join(__dirname, '../src/'),
-      src: path.join(__dirname, '../src/'),
+      src: path.join(__dirname, '../src/')
     },
-    extensions: ['.ts', '.js', '.json'],
+    extensions: ['.ts', '.js', '.json']
   },
-  target: 'node',
+  target: 'node'
 }
 
 /**
@@ -73,7 +73,7 @@ if (isDevMode) {
 } else {
   config.plugins.push(
     new webpack.LoaderOptionsPlugin({
-      minimize: true,
+      minimize: true
     })
   )
 }

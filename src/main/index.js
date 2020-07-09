@@ -32,7 +32,7 @@ if (!isDev) {
   // process.env.ELECTRON_ENABLE_LOGGING = true
 
   require('electron-debug')({
-    showDevTools: false,
+    showDevTools: false
   })
 }
 
@@ -60,9 +60,9 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       nodeIntegrationInWorker: false,
-      webSecurity: false,
+      webSecurity: false
     },
-    show: false,
+    show: false
   })
 
   // eslint-disable-next-line
@@ -135,7 +135,7 @@ app.on('ready', () => {
 })
  */
 
-const sendMenuEvent = async data => {
+const sendMenuEvent = async (data) => {
   mainWindow.webContents.send('change-view', data)
 }
 
@@ -148,14 +148,14 @@ const template = [
         accelerator: 'CommandOrControl+H',
         click() {
           sendMenuEvent({ route: '/' })
-        },
+        }
       },
       { type: 'separator' },
       { role: 'minimize' },
       { role: 'togglefullscreen' },
       { type: 'separator' },
-      { role: 'quit', accelerator: 'Alt+F4' },
-    ],
+      { role: 'quit', accelerator: 'Alt+F4' }
+    ]
   },
   {
     role: 'help',
@@ -166,7 +166,7 @@ const template = [
         accelerator: 'F1',
         click() {
           sendMenuEvent({ route: '/help' })
-        },
+        }
       },
       {
         label: 'About',
@@ -174,10 +174,10 @@ const template = [
         accelerator: 'CommandOrControl+A',
         click() {
           sendMenuEvent({ route: '/about' })
-        },
-      },
-    ],
-  },
+        }
+      }
+    ]
+  }
 ]
 
 function setMenu() {
@@ -193,16 +193,16 @@ function setMenu() {
         { role: 'hideothers' },
         { role: 'unhide' },
         { type: 'separator' },
-        { role: 'quit' },
-      ],
+        { role: 'quit' }
+      ]
     })
 
     template.push({
-      role: 'window',
+      role: 'window'
     })
 
     template.push({
-      role: 'help',
+      role: 'help'
     })
 
     template.push({ role: 'services' })

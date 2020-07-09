@@ -2,7 +2,7 @@
  * @Author: Jack
  * @Date: 2020-06-05 17:43:22
  * @LastEditors: Jack
- * @LastEditTime: 2020-06-05 18:03:01
+ * @LastEditTime: 2020-12-16 13:43:28
  * @Description:
  */
 
@@ -22,7 +22,7 @@ new Vue({
   el: '#app',
   router,
   store,
-  render: (h) => h(App),
+  render: (h) => h(App)
 })
 
 // to avoild accesing electorn api from web app build
